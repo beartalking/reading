@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Reading</title>
+		<link rel="icon" href="favicon.ico" type="image/x-icon" />
+		<link rel="apple-touch-icon" href="favicon.ico" />
+		<link rel="apple-touch-icon-precomposed" href="favicon.ico" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+		<meta name="viewport" content="user-scalable=no, width=device-width" />
+		<meta name="viewport" content="minimum-scale=1.0,width=device-width,maximum-scale=1,user-scalable=no" />
+		<style>
+			body {
+				text-align:center;
+				font-family:arial;
+				background-color:white;
+			}
+			h1, label {cursor:pointer}
+			h1 {font-size:30vh;cursor:pointer}
+			label {color:grey}
+			#midLabel {margin:auto 30px;}
+			@media (max-width: 860px) {
+				h1 {font-size:38vw}
+			}
+		</style>
+	</head>
+	<body ontouchstart>
+		<h1></h1>
+		<div>
+			<label><input type="radio" name="case" value="lower" onclick="changeCase()">Lower</label>
+			<label id="midLabel"><input type="radio" name="case" value="upper" onclick="changeCase()" checked>Upper</label>
+			<label><input type="radio" name="case" value="camel" onclick="changeCase()">Camel</label>
+		</div>
+	</body>
+</html>
+<script>
+	const
+		source = {
+			'ad' : ['bad','cad','dad','fad','gad','had','jad','lad','mad','nad','pad','rad','sad','tad'],
+			'ag' : ['bag','cag','dag','fag','gag','hag','jag','lag','mag','nag','rag','sag','tag'],
+			'am' : ['bam','cam','dam','fam','gam','ham','jam','kam','lam','mam','nam','pam','ram','sam','tam'],
+			'an' : ['ban','can','dan','fan','gan','han','jan','kan','lan','man','nan','pan','ran','san','tan'],
+			'ap' : ['bap','cap','dap','gap','hap','jap','lap','map','nap','pap','rap','sap','tap'],
+			'ar' : ['bar','car','far','gar','jar','lar','mar','sar','tar'],
+			'as' : ['das','fas','gas','has','kas','las','mas','pas'],
+			'at' : ['bat','cat','dat','fat','gat','hat','jat','kat','lat','mat','nat','pat','qat','rat','sat','tat'],
+			'ay' : ['bay','cay','day','fay','gay','hay','jay','kay','lay','may','nay','pay','ray','say','tay'],
+			'en' : ['ben','cen','den','fen','gen','hen','jen','ken','len','men','pen','ren','sen','ten'],
+			'ig' : ['big','cig','dig','fig','gig','jig','lig','mig','nig','pig','rig','sig','tig'],
+			'im' : ['bim','dim','gim','him','jim','kim','lim','mim','nim','pim','rim','sim','tim'],
+			'in' : ['bin','din','fin','gin','hin','jin','kin','lin','min','pin','rin','sin','tin'],
+			'ip' : ['dip','fip','gip','hip','kip','lip','nip','pip','rip','sip','tip'],
+			'it' : ['bit','dit','fit','git','hit','kit','lit','nit','pit','sit','tit'],
+			'ol' : ['bol','dol','fol','hol','kol','mol','pol','sol','tol'],
+			'om' : ['bom','com','hom','mom','nom','pom','rom','tom'],
+			'on' : ['bon','con','don','gon','hon','jon','kon','non','ron','son','ton'],
+			'op' : ['bop','cop','fop','hop','kop','lop','mop','pop','sop','top'],
+			'ot' : ['bot','cot','dot','got','hot','jot','lot','not','pot','rot','sot','tot'],
+			'ow' : ['bow','cow','dow','fow','how','jow','low','mow','now','pow','row','sow','tow'],
+			'ox' : ['box','cox','fox','gox','hox','lox','nox','pox','rox','sox','tox'],
+			'um' : ['bum','cum','dum','fum','gum','hum','lum','mum','num','rum','sum','tum'],
+			'un' : ['bun','cun','dun','fun','gun','hun','jun','mun','nun','pun','run','sun','tun'],
+			'up' : ['cup','dup','gup','hup','pup','sup','tup'],
+			'us' : ['bus','gus','jus','mus','nus','pus','rus'],
+			'ut' : ['but','cut','fut','gut','hut','jut','lut','mut','nut','put','rut','tut']
+		}
+		
+		let 
+			suffix, suffixIndex, selectedSuffix, wordIndex, selectedCase = "upper", timer = 0,
+			start = () => {
+				suffix = Object.keys(source).sort(()=>Math.random()-.5)
+				suffixIndex = 0;
+				selectedSuffix = source[suffix[suffixIndex]].sort(()=>Math.random()-.5);
+				wordIndex = 0;
+				nextWord();
+			},
+			nextWord = () => {
+				if(wordIndex < selectedSuffix.length){
+					document.getElementsByTagName('h1')[0].innerText = selectedSuffix[wordIndex];
+					displayText();
+					wordIndex++;
+				}
+				else {
+					suffixIndex++;
+					if(suffixIndex==suffix.length) {
+						suffixIndex = 0;
+					}
+					selectedSuffix = source[suffix[suffixIndex]].sort(()=>Math.random()-.5);
+					wordIndex = 0;
+					nextWord();
+				}
+			},
+			speak = (txt) => {
+				var word = new SpeechSynthesisUtterance(txt)
+				word.lang = 'en';
+				word.rate = 1;
+				speechSynthesis.speak(word);
+			};
+			changeCase = () => {
+				for(i in document.getElementsByName('case')){
+					if(document.getElementsByName('case')[i].checked){
+						selectedCase = document.getElementsByName('case')[i].value;
+					}
+				}
+				displayText();
+			},
+			displayText = () => {
+				var h1 = document.getElementsByTagName('h1')[0];
+				if(selectedCase == "upper"){
+					h1.innerText = h1.innerText.toUpperCase();
+				}
+				else if(selectedCase == "lower"){
+					h1.innerText = h1.innerText.toLowerCase();
+				}
+				else {
+					h1.innerText = h1.innerText.toLowerCase().replace(/(?<= )[^\s]|^./g, a => a.toUpperCase());
+				}
+			}
+
+		document.getElementsByTagName('h1')[0].onclick = function(){
+			clearTimeout(timer);
+			speak(this.innerText.toLowerCase());
+			timer = setTimeout("nextWord()",1000);
+		}
+		start();
+
+</script>
