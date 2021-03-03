@@ -113,7 +113,7 @@
 					h1.innerText = h1.innerText.toLowerCase();
 				}
 				else {
-					h1.innerText = h1.innerText.toLowerCase().replace(/(?<= )[^\s]|^./g, a => a.toUpperCase());
+					h1.innerText = h1.innerText.charAt(0).toUpperCase()+h1.innerText.toLowerCase().slice(1);
 				}
 			}
 
